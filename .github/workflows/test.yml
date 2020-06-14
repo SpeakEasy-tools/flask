@@ -1,0 +1,30 @@
+name: Python application
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      python-version: 3.6
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ env.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ env.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python3 -m pip install -U pip
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install -U flake8 flake8-bugbear
+
+    - name: Lint codebase
+      run: python3 -m flake8
