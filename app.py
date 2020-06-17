@@ -17,7 +17,7 @@ def firebase_auth(f):
         id_token = auth_header.split(' ', 1)[1]
         try:
             auth.verify_id_token(id_token)
-        except BaseException as e:
+        except BaseException:
             # print('invalid token')
             # print(e)
             return redirect('/')
