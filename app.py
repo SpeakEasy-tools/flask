@@ -22,12 +22,31 @@ def firebase_auth(f):
             # print(e)
             return redirect('/')
         return f(*args, **kwargs)
+
     return decorated_function
 
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
+
+
+@app.route('/g2p')
+def grapheme_to_phoneme():
+    return 'g2p'
+
+
+@app.route('/uno')
+def uno():
+    return 'uno'
+
+
+@app.route('/sudoku/<int:difficulty>')
+@firebase_auth
+def sudoku(difficulty):
+    return "{board:[[9, , 8, 2, 1, , 6, , ],[1, 3, 4, , 9, 6, , , 2],[2, , 7, , 5, , 1, , ],[ , 1, 3, 7, , , 9, 2, " \
+           "5],[ , , 9, , 2, , 7, , ],[ , , , 9, 3, 5, 8, , 6],[ , 2, , , , 9, 3, , 7],[ , , 1, , , , 4, 8, ],[4, , " \
+           "6, , , , , , 1]]} "
 
 
 @app.route('/test')
