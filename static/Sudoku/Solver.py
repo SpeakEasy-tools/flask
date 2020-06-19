@@ -8,13 +8,13 @@ class Solver:
     # checks to make sure each compartment contains
     def is_valid(self):
         valid = set(range(1, 10))
-        for i, box in self.board.boxes.items():
+        for _i, box in self.board.boxes.items():
             if not valid == set([x.value for x in box]):
                 return False
-        for i, row in self.board.rows.items():
+        for _i, row in self.board.rows.items():
             if not valid == set([x.value for x in row]):
                 return False
-        for i, col in self.board.columns.items():
+        for _i, col in self.board.columns.items():
             if not valid == set([x.value for x in col]):
                 return False
         return True

@@ -28,7 +28,7 @@ class Generator:
         if len(self.board.get_used_cells()) == 81:
 
             # looping through iterations
-            for x in range(0, iterations):
+            for _x in range(0, iterations):
 
                 # to get a random column/row
                 case = randint(0, 4)

@@ -119,7 +119,7 @@ class Board:
     # returns string representation
     def __str__(self):
         output = []
-        for index, row in self.rows.items():
+        for _index, row in self.rows.items():
             my_set = map(str, [x.value for x in row])
             new_set = []
             for x in my_set:
@@ -139,7 +139,7 @@ class Board:
     # exporting puzzle to a html table for prettier visualization
     def html(self):
         html = "<table>"
-        for index, row in self.rows.iteritems():
+        for _index, row in self.rows.items():
             values = []
             row_string = "<tr>"
             for x in row:
