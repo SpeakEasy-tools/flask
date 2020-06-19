@@ -1,21 +1,22 @@
 from .Board import Board
 from .Solver import Solver
-from functools import reduce
 from random import randint, shuffle
+
+
 class Generator:
 
     # constructor for generator
     def __init__(self):
 
-        numbers = [ 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                    4, 5, 6, 7, 8, 9, 1, 2, 3,
-                    7, 8, 9, 1, 2, 3, 4, 5, 6,
-                    2, 1, 4, 3, 6, 5, 8, 9, 7,
-                    3, 6, 5, 8, 9, 7, 2, 1, 4,
-                    8, 9, 7, 2, 1, 4, 3, 6, 5,
-                    5, 3, 1, 6, 4, 2, 9, 7, 8,
-                    6, 4, 2, 9, 7, 8, 5, 3, 1,
-                    9, 7, 8, 5, 3, 1, 6, 4, 2 ]
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9,
+                   4, 5, 6, 7, 8, 9, 1, 2, 3,
+                   7, 8, 9, 1, 2, 3, 4, 5, 6,
+                   2, 1, 4, 3, 6, 5, 8, 9, 7,
+                   3, 6, 5, 8, 9, 7, 2, 1, 4,
+                   8, 9, 7, 2, 1, 4, 3, 6, 5,
+                   5, 3, 1, 6, 4, 2, 9, 7, 8,
+                   6, 4, 2, 9, 7, 8, 5, 3, 1,
+                   9, 7, 8, 5, 3, 1, 6, 4, 2]
 
         # constructing board
         self.board = Board(numbers)
@@ -24,7 +25,7 @@ class Generator:
     def randomize(self, iterations):
 
         # not allowing transformations on a partial puzzle
-        if len(self.board.get_used_cells())==81:
+        if len(self.board.get_used_cells()) == 81:
 
             # looping through iterations
             for x in range(0, iterations):
@@ -37,9 +38,9 @@ class Generator:
 
                 # in order to select which row and column we shuffle an array of
                 # indices and take both elements
-                options = list(range(0,3))
+                options = list(range(0, 3))
                 shuffle(options)
-                piece1, piece2 = options[0],options[1]
+                piece1, piece2 = options[0], options[1]
                 # pick case according to random to do transformation
                 if case == 0:
                     self.board.swap_row(block + piece1, block + piece2)
@@ -50,19 +51,20 @@ class Generator:
                 elif case == 3:
                     self.board.swap_band(piece1, piece2)
         else:
-            raise Exception('Rearranging partial board may compromise uniqueness.')
+            raise Exception(
+                'Rearranging partial board may compromise uniqueness.')
 
     # method gets all possible values for a particular cell, if there is only one
     # then we can remove that cell
-    def reduce_via_logical(self, cutoff = 81):
+    def reduce_via_logical(self, cutoff=81):
         cells = self.board.get_used_cells()
         shuffle(cells)
         for cell in cells:
-                if len(self.board.get_possibles(cell)) == 1:
-                    cell.value = 0
-                    cutoff -= 1
-                if cutoff == 0:
-                    break
+            if len(self.board.get_possibles(cell)) == 1:
+                cell.value = 0
+                cutoff -= 1
+            if cutoff == 0:
+                break
 
     # method attempts to remove a cell and checks that solution is still unique
     def reduce_via_random(self, cutoff=81):
@@ -70,15 +72,16 @@ class Generator:
         existing = temp.get_used_cells()
 
         # sorting used cells by density heuristic, highest to lowest
-        new_set = [(x,self.board.get_density(x)) for x in existing]
-        elements= [x[0] for x in sorted(new_set, key=lambda x: x[1], reverse=True)]
+        new_set = [(x, self.board.get_density(x)) for x in existing]
+        elements = [x[0]
+                    for x in sorted(new_set, key=lambda x: x[1], reverse=True)]
 
         # for each cell in sorted list
         for cell in elements:
             original = cell.value
 
             # get list of other values to try in its place
-            complement = [x for x in range(1,10) if x != original]
+            complement = [x for x in range(1, 10) if x != original]
             ambiguous = False
 
             # check each value in list of other possibilities to try
@@ -91,13 +94,15 @@ class Generator:
                 s = Solver(temp)
 
                 # if solver can fill every box and the solution is valid then
-                # puzzle becomes ambiguous after removing particular cell, so we can break out
+                # puzzle becomes ambiguous after removing particular cell, so
+                # we can break out
                 if s.solve() and s.is_valid():
                     cell.value = original
                     ambiguous = True
                     break
 
-            # if every value was checked and puzzle remains unique, we can remove it
+            # if every value was checked and puzzle remains unique, we can
+            # remove it
             if not ambiguous:
                 cell.value = 0
                 cutoff -= 1
@@ -106,9 +111,9 @@ class Generator:
             if cutoff == 0:
                 break
 
-
-    # returns current state of generator including number of empty cells and a representation
-    # of the puzzle
+    # returns current state of generator including number of
+    # empty cells and a representation of the puzzle
     def get_current_state(self):
-        template = "There are currently %d starting cells.\n\rCurrent puzzle state:\n\r\n\r%s\n\r"
-        return template % (len(self.board.get_used_cells()),self.board.__str__())
+        template = "There are currently %d starting cells.\
+        \n\rCurrent puzzle state:\n\r\n\r%s\n\r"
+        return template % (len(self.board.get_used_cells()), self.board.__str__())

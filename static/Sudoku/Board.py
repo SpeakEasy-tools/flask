@@ -1,5 +1,3 @@
-import random
-
 from .Cell import Cell
 
 
@@ -26,18 +24,18 @@ class Board:
                 cell = Cell(row, col, box)
 
                 # if initial set is given, set cell value
-                if not numbers is None:
+                if numbers is not None:
                     cell.value = numbers.pop(0)
                 else:
                     cell.value = 0
 
                 # initializing dictionary keys and corresponding lists
                 # if they are not initialized
-                if not row in self.rows:
+                if row not in self.rows:
                     self.rows[row] = []
-                if not col in self.columns:
+                if col not in self.columns:
                     self.columns[col] = []
-                if not box in self.boxes:
+                if box not in self.boxes:
                     self.boxes[box] = []
 
                 # adding cells to each list
@@ -45,7 +43,6 @@ class Board:
                 self.columns[col].append(cell)
                 self.boxes[box].append(cell)
                 self.cells.append(cell)
-
 
     # returning cells in puzzle that are not set to zero
     def get_used_cells(self):
@@ -58,22 +55,27 @@ class Board:
     # returning all possible values that could be assigned to the
     # cell provided as argument
     def get_possibles(self, cell):
-        all = self.rows[cell.row] + self.columns[cell.col] + self.boxes[cell.box]
-        excluded = set([x.value for x in all if x.value!=0 and x.value != cell.value])
+        all = self.rows[cell.row] + \
+            self.columns[cell.col] + self.boxes[cell.box]
+        excluded = set([x.value for x in all if x.value !=
+                        0 and x.value != cell.value])
         results = [x for x in range(1, 10) if x not in excluded]
         return results
 
     # calculates the density of a specific cell's context
-    def get_density(self,cell):
-        all = self.rows[cell.row] + self.columns[cell.col] + self.boxes[cell.box]
-        if cell.value != 0: all.remove(cell)
-        return len([x for x in set(all) if x.value != 0])/20.0
+    def get_density(self, cell):
+        all = self.rows[cell.row] + \
+            self.columns[cell.col] + self.boxes[cell.box]
+        if cell.value != 0:
+            all.remove(cell)
+        return len([x for x in set(all) if x.value != 0]) / 20.0
 
     # gets complement of possibles, values that cell cannot be
-    def get_excluded(self,cell):
-        all = self.rows[cell.row] + self.columns[cell.col] + self.boxes[cell.box]
-        excluded = set([x.value for x in all if x.value!=0 and x.value != cell.value])
-
+    def get_excluded(self, cell):
+        all = self.rows[cell.row] + \
+            self.columns[cell.col] + self.boxes[cell.box]
+        return set([x.value for x in all if x.value !=
+                    0 and x.value != cell.value])
 
     # swaps two rows
     def swap_row(self, row_index1, row_index2, allow=False):
@@ -90,7 +92,8 @@ class Board:
         if allow or col_index1 // 3 == col_index2 // 3:
             for x in range(0, len(self.columns[col_index2])):
                 temp = self.columns[col_index1][x].value
-                self.columns[col_index1][x].value = self.columns[col_index2][x].value
+                self.columns[col_index1][
+                    x].value = self.columns[col_index2][x].value
                 self.columns[col_index2][x].value = temp
         else:
             raise Exception('Tried to swap non-familial columns.')
@@ -108,9 +111,9 @@ class Board:
     # copies the board
     def copy(self):
         b = Board()
-        for row in range(0,len(self.rows)):
-            for col in range(0,len(self.columns)):
-                b.rows[row][col].value=self.rows[row][col].value
+        for row in range(0, len(self.rows)):
+            for col in range(0, len(self.columns)):
+                b.rows[row][col].value = self.rows[row][col].value
         return b
 
     # returns string representation
@@ -120,11 +123,13 @@ class Board:
             my_set = map(str, [x.value for x in row])
             new_set = []
             for x in my_set:
-                if x == '0': new_set.append("_")
-                else: new_set.append(x)
+                if x == '0':
+                    new_set.append("_")
+                else:
+                    new_set.append(x)
             output.append('|'.join(new_set))
         return '\r\n'.join(output)
-        
+
     def stringify(self):
         output = []
         for cell in self.cells:
@@ -143,7 +148,7 @@ class Board:
                     row_string += "<td>%s</td>"
                 else:
                     values.append(x.value)
-                    row_string +="<td>%d</td>"
+                    row_string += "<td>%d</td>"
             row_string += "</tr>"
             html += row_string % tuple(values)
         html += "</table>"

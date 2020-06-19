@@ -12,9 +12,9 @@ firebase_admin.initialize_app(credentials.Certificate('gcloud.json'))
 def makeBoard(difficulty):
     with app.app_context():
         difficulties = {
-            'easy': (35, 0), 
-            'medium': (81, 5), 
-            'hard': (81, 10), 
+            'easy': (35, 0),
+            'medium': (81, 5),
+            'hard': (81, 10),
             'extreme': (81, 15)
         }
         gen = Generator()
@@ -26,12 +26,14 @@ def makeBoard(difficulty):
         final = gen.board.copy()
         sudoku_boards[difficulty].put(jsonify(final.stringify()))
 
-#code for generating sudoku boards, very slow so comment out if working on something else
+
+# code for generating sudoku boards, very slow so comment out if working
+# on something else
 sudoku_boards = {}
 for difficulty in ('easy', 'medium', 'hard', 'extreme'):
     sudoku_boards[difficulty] = queue.LifoQueue()
 for key in sudoku_boards:
-    for i in range(2): #change number to change number of boards to store
+    for i in range(2):  # change number to change number of boards to store
         makeBoard(key)
         print("Generated board " + str(i) + " for " + key)
 
@@ -77,7 +79,8 @@ def sudoku():
     def after_request(response):
         print(arg)
         makeBoard(arg)
-        response.headers.add('Access-Control-Allow-Origin', '*') #change * to SpeakEasy server 
+        # change * to SpeakEasy server
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
     arg = request.args.get('difficulty')
     board = sudoku_boards[arg].get()
