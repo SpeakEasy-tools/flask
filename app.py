@@ -8,7 +8,6 @@ import threading
 
 app = Flask(__name__)
 firebase_admin.initialize_app(credentials.Certificate('gcloud.json'))
-loadSudoku()
 
 
 def makeBoard(difficulty):
@@ -29,14 +28,13 @@ def makeBoard(difficulty):
         sudoku_boards[difficulty].put(jsonify(final.stringify()))
 
 
-def loadSudoku:
-    sudoku_boards = {}
-    for difficulty in ('Easy', 'Medium', 'Hard', 'Extreme'):
-        sudoku_boards[difficulty] = queue.LifoQueue()
-    for key in sudoku_boards:
-        for i in range(2):  # change number to change number of boards to store
-            makeBoard(key)
-            print("Generated board " + str(i) + " for " + key)
+sudoku_boards = {}
+for difficulty in ('Easy', 'Medium', 'Hard', 'Extreme'):
+    sudoku_boards[difficulty] = queue.LifoQueue()
+for key in sudoku_boards:
+    for i in range(2):  # change number to change number of boards to store
+        makeBoard(key)
+        print("Generated board " + str(i) + " for " + key)
 
 
 def firebase_auth(f):
@@ -78,7 +76,6 @@ def uno():
 def sudoku():
     @after_this_request
     def after_request(response):
-        print(arg)
         thread = threading.Thread(target=makeBoard, args=(arg,))
         thread.start()
         response.headers.add('Access-Control-Allow-Origin', '*')
