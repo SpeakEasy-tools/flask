@@ -28,15 +28,6 @@ def makeBoard(difficulty):
         sudoku_boards[difficulty].put(jsonify(final.stringify()))
 
 
-sudoku_boards = {}
-for difficulty in ('Easy', 'Medium', 'Hard', 'Extreme'):
-    sudoku_boards[difficulty] = queue.LifoQueue()
-for key in sudoku_boards:
-    for i in range(2):  # change number to change number of boards to store
-        makeBoard(key)
-        print("Generated board " + str(i) + " for " + key)
-
-
 def firebase_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -72,7 +63,7 @@ def uno():
 
 
 @app.route('/sudoku', methods=['POST'])
-@firebase_auth
+# @firebase_auth
 def sudoku():
     @after_this_request
     def after_request(response):
@@ -89,3 +80,12 @@ def sudoku():
 @firebase_auth
 def test():
     return 'firebase auth'
+
+
+sudoku_boards = {}
+for difficulty in ('Easy', 'Medium', 'Hard', 'Extreme'):
+    sudoku_boards[difficulty] = queue.LifoQueue()
+for key in sudoku_boards:
+    for i in range(2):  # change number to change number of boards to store
+        makeBoard(key)
+        print("Generated board " + str(i) + " for " + key)
