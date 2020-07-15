@@ -1,7 +1,11 @@
 from functools import wraps
+import json
+import os
+import random
+
 import firebase_admin
 from firebase_admin import auth, credentials
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, jsonify
 
 app = Flask(__name__)
 firebase_admin.initialize_app(credentials.Certificate('gcloud.json'))
@@ -44,10 +48,22 @@ def uno():
 @app.route('/sudoku/<int:difficulty>')
 @firebase_auth
 def sudoku(difficulty):
-    return "{board:[[9, , 8, 2, 1, , 6, , ],[1, 3, 4, , 9, 6, , , 2]," \
-           "[2, , 7, , 5, , 1, , ],[ , 1, 3, 7, , , 9, 2, 5],[ , , 9, , 2, , 7, , ]," \
-           "[ , , , 9, 3, 5, 8, , 6],[ , 2, , , , 9, 3, , 7],[ , , 1, , , , 4, 8, ]," \
-           "[4, , 6, , , , , , 1]]}"
+    if difficulty < 1 or difficulty > 5:
+        return jsonify({
+            'status': 'error',
+            'message': 'invalid difficulty'
+        })
+
+    level = ['easy', 'medium', 'hard', 'harder', 'hardest'][difficulty - 1]
+    board_dir = os.path.join('static', 'sudoku_boards', level)
+
+    choice = random.randint(1, len(os.listdir(board_dir)))
+
+    with open(os.path.join(board_dir, f'{choice}.json')) as open_file:
+        return jsonify({
+            'status': 'success',
+            'board': json.load(open_file)['unsolved']
+        })
 
 
 @app.route('/test')
