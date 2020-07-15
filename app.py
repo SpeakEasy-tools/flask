@@ -60,7 +60,10 @@ def sudoku(difficulty):
     choice = random.randint(1, len(os.listdir(board_dir)))
 
     with open(os.path.join(board_dir, f'{choice}.json')) as open_file:
-        return jsonify(json.load(open_file))
+        return jsonify({
+            'status': 'success',
+            'board': json.load(open_file)['unsolved']
+        })
 
 
 @app.route('/test')
