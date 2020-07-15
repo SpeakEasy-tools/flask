@@ -455,6 +455,14 @@ version = "1.15.0"
 
 [[package]]
 category = "main"
+description = "Package to easily generate and/or solve any 9x9 sudoku grid"
+name = "sudoku-manager"
+optional = false
+python-versions = "*"
+version = "1.0.6"
+
+[[package]]
+category = "main"
 description = "URI templates"
 name = "uritemplate"
 optional = false
@@ -500,7 +508,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "892f3530cac256fb389d9aafa04af81c48f92e59baf6c9282b853d3d4807cf5b"
+content-hash = "8e77113e131c1650905b16d89788ddfd583e554b35df476bf110412f2a71081b"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -765,6 +773,10 @@ rsa = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+sudoku-manager = [
+    {file = "sudoku_manager-1.0.6-py3-none-any.whl", hash = "sha256:716faa27c61f7151ee5f63cc84181e315eb3aa3b81096e0e40d846bba027ca3e"},
+    {file = "sudoku_manager-1.0.6.tar.gz", hash = "sha256:f9f696211a842fcf33356f5b41d3b4ed7a94f1d03d0c9f710d617b173d97f9fb"},
 ]
 uritemplate = [
     {file = "uritemplate-3.0.1-py2.py3-none-any.whl", hash = "sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f"},
