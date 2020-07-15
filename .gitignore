@@ -3,3 +3,5 @@ __pycache__
 gcloud.json
 .idea
 .idea/*
+.py[cod]
+.vscode/
