@@ -50,7 +50,6 @@ def sudoku(difficulty):
            "[4, , 6, , , , , , 1]]}"
 
 
-
 @app.route('/test')
 @firebase_auth
 def test():
