@@ -1,31 +1,14 @@
 from functools import wraps
+import json
+import os
+import random
+
 import firebase_admin
 from firebase_admin import auth, credentials
-from flask import Flask, request, redirect, jsonify, after_this_request
-from static.Sudoku.Generator import Generator
-import queue
-import threading
+from flask import Flask, request, redirect, jsonify
 
 app = Flask(__name__)
 firebase_admin.initialize_app(credentials.Certificate('gcloud.json'))
-
-
-def makeBoard(difficulty):
-    with app.app_context():
-        difficulties = {
-            'Easy': (35, 0),
-            'Medium': (81, 5),
-            'Hard': (81, 10),
-            'Extreme': (81, 15)
-        }
-        gen = Generator()
-        gen.randomize(100)
-        pair = difficulties[difficulty]
-        gen.reduce_via_logical(pair[0])
-        if pair[1] != 0:
-            gen.reduce_via_random(pair[1])
-        final = gen.board.copy()
-        sudoku_boards[difficulty].put(jsonify(final.stringify()))
 
 
 def firebase_auth(f):
@@ -62,30 +45,28 @@ def uno():
     return 'uno'
 
 
-@app.route('/sudoku', methods=['POST'])
-# @firebase_auth
-def sudoku():
-    @after_this_request
-    def after_request(response):
-        thread = threading.Thread(target=makeBoard, args=(arg,))
-        thread.start()
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-    arg = request.args.get('difficulty')
-    board = sudoku_boards[arg].get()
-    return board
+@app.route('/sudoku/<int:difficulty>')
+@firebase_auth
+def sudoku(difficulty):
+    if difficulty < 1 or difficulty > 5:
+        return jsonify({
+            'status': 'error',
+            'message': 'invalid difficulty'
+        })
+
+    level = ['easy', 'medium', 'hard', 'harder', 'hardest'][difficulty - 1]
+    board_dir = os.path.join('static', 'sudoku_boards', level)
+
+    choice = random.randint(1, len(os.listdir(board_dir)))
+
+    with open(os.path.join(board_dir, f'{choice}.json')) as open_file:
+        return jsonify({
+            'status': 'success',
+            'board': json.load(open_file)['unsolved']
+        })
 
 
 @app.route('/test')
 @firebase_auth
 def test():
     return 'firebase auth'
-
-
-sudoku_boards = {}
-for difficulty in ('Easy', 'Medium', 'Hard', 'Extreme'):
-    sudoku_boards[difficulty] = queue.LifoQueue()
-for key in sudoku_boards:
-    for i in range(2):  # change number to change number of boards to store
-        makeBoard(key)
-        print("Generated board " + str(i) + " for " + key)
