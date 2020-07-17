@@ -5,7 +5,7 @@ import random
 
 import firebase_admin
 from firebase_admin import auth, credentials
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 firebase_admin.initialize_app(credentials.Certificate('gcloud.json'))
@@ -17,14 +17,20 @@ def firebase_auth(f):
         auth_header = request.headers.get('authorization', None)
         if auth_header is None:
             # print('no auth token')
-            return redirect('/')
+            return jsonify({
+                'status': 'error',
+                'message': 'no authorization token provided'
+            })
         id_token = auth_header.split(' ', 1)[1]
         try:
             auth.verify_id_token(id_token)
         except BaseException:
             # print('invalid token')
             # print(e)
-            return redirect('/')
+            return jsonify({
+                'status': 'error',
+                'message': 'invalid token provided'
+            })
         return f(*args, **kwargs)
 
     return decorated_function
